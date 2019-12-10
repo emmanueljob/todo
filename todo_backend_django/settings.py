@@ -1,15 +1,22 @@
 import os.path
 # Django settings for todo_backend_django project.
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__))
 DATABASE_PATH = PROJECT_ROOT + "/database.db"
 DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+#        'NAME': DATABASE_PATH                      # Or path to database file if using sqlite3.
+#    }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': DATABASE_PATH                      # Or path to database file if using sqlite3.
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', # 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'todo',                     
+        'USER': 'todo',                     
+        'HOST': 'localhost',                    
+        'PASSWORD': 'pwd',                      
     }
 }
 
@@ -108,3 +115,4 @@ LOGGING = {
         },
     }
 }
+STATIC_URL='/static/'
