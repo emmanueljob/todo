@@ -14,9 +14,10 @@ class TodoList(APIView):
         return JSONResponse(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, format=None):
-        serializer = TodoItemSerializer(data=request.DATA)
+        serializer = TodoItemSerializer(data=request.data)
         if serializer.is_valid():
             saved_item = serializer.save()
+            saved_item.save()
             saved_item.url = request.build_absolute_uri('/todo/' + str(saved_item.id))
             saved_item.save()
             serializer = TodoItemSerializer(instance=saved_item)
@@ -28,29 +29,29 @@ class TodoList(APIView):
         return JSONResponse(None, status=status.HTTP_204_NO_CONTENT)
 
 class Todo(APIView):
-    def get(self, request, pk, format=None):
+    def get(self, request, id, format=None):
         try:
-            todoItem = TodoItem.objects.get(pk=pk)
+            todoItem = TodoItem.objects.get(id=id)
             serializer = TodoItemSerializer(todoItem)
         except TodoItem.DoesNotExist:
             return JSONResponse(None, status=status.HTTP_400_BAD_REQUEST)
         return JSONResponse(serializer.data, status=status.HTTP_200_OK)
 
-    def delete(self, request, pk, format=None):
+    def delete(self, request, id, format=None):
         try:
-            todoItem = TodoItem.objects.get(pk=pk)
+            todoItem = TodoItem.objects.get(id=id)
             todoItem.delete()
         except TodoItem.DoesNotExist:
             return JSONResponse(None, status=status.HTTP_400_BAD_REQUEST)
         return JSONResponse(None, status=status.HTTP_204_NO_CONTENT)
 
-    def patch(self, request, pk, format=None):
+    def patch(self, request, id, format=None):
         try:
-            todoItem = TodoItem.objects.get(pk=pk)
+            todoItem = TodoItem.objects.get(id=id)
         except TodoItem.DoesNotExist:
             return JSONResponse(None, status=status.HTTP_400_BAD_REQUEST)
-        serializer = TodoItemSerializer(data=request.DATA, instance=todoItem, partial=True)
+        serializer = TodoItemSerializer(data=request.data, instance=todoItem, partial=True)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save().save()
             return JSONResponse(serializer.data, status=status.HTTP_200_OK)
         return JSONResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
