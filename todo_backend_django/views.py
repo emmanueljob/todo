@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 
 from todo_backend_django.JSONResponse import JSONResponse
 
-from todo_backend_django.models import TodoItem
+from todo_backend_django.models import TodoItem, Label
 from todo_backend_django.serializers import TodoItemSerializer
 
 
@@ -15,11 +15,10 @@ class TodoList(APIView):
 
     def post(self, request, format=None):
         serializer = TodoItemSerializer(data=request.data)
+        labels = request.data.get("labels")
         if serializer.is_valid():
             saved_item = serializer.save()
-            saved_item.save()
             saved_item.url = request.build_absolute_uri('/todo/' + str(saved_item.id))
-            saved_item.save()
             serializer = TodoItemSerializer(instance=saved_item)
             return JSONResponse(serializer.data, status=status.HTTP_201_CREATED)
         return JSONResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

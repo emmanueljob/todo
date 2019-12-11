@@ -1,0 +1,35 @@
+import json
+import django
+django.setup()
+
+import unittest
+from rest_framework.test import APIRequestFactory
+from todo_backend_django import settings
+from todo_backend_django.views import Todo
+from todo_backend_django.views import TodoList
+
+
+
+class TestTodoList(unittest.TestCase):
+
+    def setUp(self):
+        pass
+    
+    def testPost(self):
+        # Using the standard RequestFactory API to create a form POST request
+        factory = APIRequestFactory()
+        request = factory.post('/todos/', {'title': 'eman'})
+        view = TodoList.as_view()
+        response = view(request, None)
+
+        obj = json.loads(response.content)
+        assert obj.get('title') == 'eman'
+        assert obj.get('id') is not None
+        assert obj.get('id') > 0
+
+    def testGet(self):
+
+        todo = Todo
+        
+        assert True
+        
